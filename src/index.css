@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --radius-oneui: 2rem;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 min-h-screen antialiased transition-colors duration-300;
+    background: radial-gradient(circle at top left, #f8fafc 0%, #e2e8f0 100%);
+  }
+
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
+    background: radial-gradient(circle at top left, #1e293b 0%, #020617 100%);
+  }
+}
+
+.glass {
+  @apply bg-white/60 backdrop-blur-xl border border-white/60 shadow-xl transition-all duration-300;
+}
+.dark .glass {
+  @apply bg-white/5 border border-white/10 shadow-2xl;
+}
+
+.oneui-shadow {
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+}
+.dark .oneui-shadow {
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full transition-colors duration-300;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-white/20;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/30;
+}
+
