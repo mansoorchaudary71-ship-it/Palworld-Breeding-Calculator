@@ -36,6 +36,12 @@ export interface Pal {
   drops?: string[];
 }
 
+const getImageUrl = (image?: string) => {
+  if (!image) return '';
+  if (image.startsWith('http')) return image;
+  return `./${image.replace(/^\//, '')}`;
+};
+
 // Convert the linear special combinations array into a fast lookup map
 const SPECIAL_RECIPES: Record<string, string> = {};
 specialCombinations.forEach(combo => {
@@ -216,7 +222,7 @@ const SearchableSelect = ({
           {value ? (
             <>
               {value.image ? (
-                <img src={value.image.startsWith('http') ? value.image : `/${value.image}`} referrerPolicy="no-referrer" alt={value.name} className="w-10 h-10 object-contain drop-shadow" />
+                <img src={getImageUrl(value.image)} referrerPolicy="no-referrer" alt={value.name} className="w-10 h-10 object-contain drop-shadow" />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0">
                   <span className="text-xs text-slate-500 font-medium">{value.name.substring(0, 2).toUpperCase()}</span>
@@ -303,7 +309,7 @@ const SearchableSelect = ({
                   className="w-full p-2 flex items-center gap-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left group/item"
                 >
                   {pal.image ? (
-                    <img src={pal.image.startsWith('http') ? pal.image : `/${pal.image}`} referrerPolicy="no-referrer" alt={pal.name} className="w-10 h-10 object-contain drop-shadow-sm group-hover/item:scale-110 transition-transform" />
+                    <img src={getImageUrl(pal.image)} referrerPolicy="no-referrer" alt={pal.name} className="w-10 h-10 object-contain drop-shadow-sm group-hover/item:scale-110 transition-transform" />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center shrink-0">
                       <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{pal.name.substring(0, 2).toUpperCase()}</span>
@@ -591,7 +597,7 @@ export default function App() {
                             <div className="w-48 h-48 md:w-56 md:h-56 shrink-0 relative rounded-[2rem] overflow-hidden glass bg-white/5 border border-white/10 p-4 shadow-xl">
                               <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 pointer-events-none" />
                               {resultPal.image ? (
-                                <img src={resultPal.image.replace('100x100', '400x400')} referrerPolicy="no-referrer" className="w-full h-full object-contain drop-shadow-2xl relative z-10 hover:scale-110 transition-transform duration-500" alt={resultPal.name} />
+                                <img src={getImageUrl(resultPal.image).replace('100x100', '400x400')} referrerPolicy="no-referrer" className="w-full h-full object-contain drop-shadow-2xl relative z-10 hover:scale-110 transition-transform duration-500" alt={resultPal.name} />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-[2rem] relative z-10">
                                   <span className="text-slate-400 font-medium">No Image</span>
@@ -775,7 +781,7 @@ export default function App() {
                     <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/20 blur-[50px] rounded-full pointer-events-none" />
                     
                     <div className="w-24 h-24 shrink-0 relative rounded-2xl overflow-hidden glass bg-white/5 p-2 border border-white/10">
-                       <img src={targetChild.image?.startsWith('http') ? targetChild.image : `/${targetChild.image}`} referrerPolicy="no-referrer" className="w-full h-full object-contain drop-shadow-xl" alt={targetChild.name} />
+                       <img src={getImageUrl(targetChild.image)} referrerPolicy="no-referrer" className="w-full h-full object-contain drop-shadow-xl" alt={targetChild.name} />
                     </div>
                     
                     <div className="flex-1 w-full text-center md:text-left space-y-2 z-10">
@@ -848,8 +854,8 @@ export default function App() {
                   {validCombinations.length > 0 ? (
                     <div className="space-y-3">
                       {validCombinations.map((combo, idx) => {
-                        const pal1 = PALS.find(p => p.name === combo.p1) || { name: combo.p1, image: '' };
-                        const pal2 = PALS.find(p => p.name === combo.p2) || { name: combo.p2, image: '' };
+                        const pal1 = PALS.find(p => p.name === combo.p1) || { name: combo.p1, image: '', elements: [] } as Partial<Pal>;
+                        const pal2 = PALS.find(p => p.name === combo.p2) || { name: combo.p2, image: '', elements: [] } as Partial<Pal>;
                         
                         return (
                           <motion.div
@@ -860,7 +866,7 @@ export default function App() {
                             className="flex items-center gap-4 p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20 transition-all border-dashed"
                           >
                             <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-3">
-                               <img src={pal1.image?.startsWith('http') ? pal1.image : `/${pal1.image}`} referrerPolicy="no-referrer" className="w-12 h-12 object-contain drop-shadow-md rounded-xl bg-white/5" alt={pal1.name} />
+                               <img src={getImageUrl(pal1.image)} referrerPolicy="no-referrer" className="w-12 h-12 object-contain drop-shadow-md rounded-xl bg-white/5" alt={pal1.name} />
                                <div className="flex flex-col items-center sm:items-start gap-1">
                                  <span className="font-medium text-sm text-slate-900 dark:text-slate-100 text-center">{combo.p1}</span>
                                  {pal1.elements && (
@@ -872,7 +878,7 @@ export default function App() {
                             </div>
                             <div className="text-slate-400 dark:text-slate-500 bg-black/5 dark:bg-white/5 p-2 rounded-full"><X className="w-4 h-4" /></div>
                             <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-3">
-                               <img src={pal2.image?.startsWith('http') ? pal2.image : `/${pal2.image}`} referrerPolicy="no-referrer" className="w-12 h-12 object-contain drop-shadow-md rounded-xl bg-white/5" alt={pal2.name} />
+                               <img src={getImageUrl(pal2.image)} referrerPolicy="no-referrer" className="w-12 h-12 object-contain drop-shadow-md rounded-xl bg-white/5" alt={pal2.name} />
                                <div className="flex flex-col items-center sm:items-start gap-1">
                                  <span className="font-medium text-sm text-slate-900 dark:text-slate-100 text-center">{combo.p2}</span>
                                  {pal2.elements && (
@@ -986,7 +992,7 @@ export default function App() {
                                 <div className="flex items-center gap-2 w-full">
                                   <div className="flex-1 flex flex-col items-center bg-black/5 dark:bg-white/5 rounded-xl px-2 py-3 border border-black/5 dark:border-white/5">
                                     {step.p1.image ? (
-                                      <img src={step.p1.image.startsWith('http') ? step.p1.image : `/${step.p1.image}`} referrerPolicy="no-referrer" className="w-8 h-8 object-contain mb-1 drop-shadow-sm" alt={step.p1.name} />
+                                      <img src={getImageUrl(step.p1.image)} referrerPolicy="no-referrer" className="w-8 h-8 object-contain mb-1 drop-shadow-sm" alt={step.p1.name} />
                                     ) : (
                                       <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] text-slate-500 mb-1">{step.p1.name.substring(0,2).toUpperCase()}</div>
                                     )}
@@ -1000,7 +1006,7 @@ export default function App() {
                                   <X className="w-4 h-4 text-slate-400 shrink-0" />
                                   <div className="flex-1 flex flex-col items-center bg-black/5 dark:bg-white/5 rounded-xl px-2 py-3 border border-black/5 dark:border-white/5">
                                     {step.p2.image ? (
-                                      <img src={step.p2.image.startsWith('http') ? step.p2.image : `/${step.p2.image}`} referrerPolicy="no-referrer" className="w-8 h-8 object-contain mb-1 drop-shadow-sm" alt={step.p2.name} />
+                                      <img src={getImageUrl(step.p2.image)} referrerPolicy="no-referrer" className="w-8 h-8 object-contain mb-1 drop-shadow-sm" alt={step.p2.name} />
                                     ) : (
                                       <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] text-slate-500 mb-1">{step.p2.name.substring(0,2).toUpperCase()}</div>
                                     )}
@@ -1015,7 +1021,7 @@ export default function App() {
                                 <ArrowRight className="w-4 h-4 text-indigo-400" />
                                 <div className="w-full flex flex-col items-center bg-indigo-500/10 dark:bg-indigo-500/20 rounded-xl px-2 py-3 border border-indigo-500/20">
                                    {step.result.image ? (
-                                      <img src={step.result.image.startsWith('http') ? step.result.image : `/${step.result.image}`} referrerPolicy="no-referrer" className="w-10 h-10 object-contain mb-1 drop-shadow-sm" alt={step.result.name} />
+                                      <img src={getImageUrl(step.result.image)} referrerPolicy="no-referrer" className="w-10 h-10 object-contain mb-1 drop-shadow-sm" alt={step.result.name} />
                                     ) : (
                                       <div className="w-10 h-10 rounded-full bg-indigo-200 dark:bg-indigo-900 flex items-center justify-center text-xs text-indigo-600 dark:text-indigo-300 font-bold mb-1">{step.result.name.substring(0,2).toUpperCase()}</div>
                                     )}
